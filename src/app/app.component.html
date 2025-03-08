@@ -1,0 +1,41 @@
+<app-navbar></app-navbar>
+
+<main>
+    <div class="contanier w-[400px] mx-auto flex items-center justify-center flex-col mt-48">
+        <div class="flex justify-start gap-12 text-3xl">
+            <h1>Task Manager</h1>
+            <span>(0/{{store.todos().length}})</span>
+        </div>
+        <form
+            (submit)="taskInput.value !=='' && onChange(taskInput.value); taskInput.value =''; $event.preventDefault()"
+            class="flex gap-3 w-full mt-12">
+            <input type="text" #taskInput class="p-3 rounded-md border outline-none w-full"
+                placeholder="Enter new Task..." name="" id="">
+            <button type="submit" class="p-3 border rounded-md">Add</button>
+        </form>
+        <ul class="w-full">
+            @for (task of store.todos(); track $index) {
+            <li class="flex justify-between  gap-2 text-xl mb-2 mt-2  w-full">
+                <div class="flex gap-3 items-center">
+                    <input type="checkbox" #checkInput [checked]="task.complated"  (change)="store.toggleComplate(task.id)" name="" id="">
+                    @if (task.id === store.editingId()) {
+                        <input type="text" name="" id="" #editInput class="border" [value]="task.title">
+                        <div class="flex items-center gap-2">
+                                <mat-icon (click)="store.editSave(task.id , editInput.value)">save</mat-icon>
+                                <mat-icon (click)="store.cancelEdit()">cancel</mat-icon>
+                        </div>
+                    }@else {     
+                        <h2 [classList]="task.complated? 'line-through':''">{{task.title}}</h2>
+                    }
+
+                </div>
+                <div class="flex">
+                    <mat-icon class="text-blue-500 cursor-pointer"
+                        (click)="store.startEditing(task.id)">edit</mat-icon>
+                    <mat-icon class="text-red-500 cursor-pointer" (click)="store.deleteTodo(task.id)">delete</mat-icon>
+                </div>
+            </li>
+            }
+        </ul>
+    </div>
+</main>
